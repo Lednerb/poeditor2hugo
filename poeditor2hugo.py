@@ -65,16 +65,21 @@ for language in tqdm(r.get('result').get('languages'), "Processing languages fro
         with open(LANGUAGE_FILE_PATH + language.get('code') + '.toml', 'w', 1, 'utf-8') as file:
             for string in f.json():
                 if string.get('definition') is not None:
-                    file.write("[" + string.get('term') + "]\n")
-                    if string.get('term_plural') is not '':
-                        file.write('one = "' + string.get('definition') + '"\n')
-                        file.write('other = "' + string.get('term_plural') + '"\n')
-                    else:
-                        file.write('other = "' + string.get('definition') + '"\n')
+                    definition = string.get('definition')
 
-                    file.write("\n")
+                    if type(definition) is dict:
+                        if (definition.get('one') is not '') or (definition.get('other') is not ''):
+                            file.write("[" + string.get('term') + "]\n")
+                            if(definition.get('one') is not None):
+                                file.write('one = "' + definition.get("one") + '"\n')
+                            if(definition.get('other') is not None):
+                                file.write('other = "' + definition.get("other") + '"\n')
+                            file.write("\n")
+                    else:
+                        file.write("[" + string.get('term') + "]\n")
+                        file.write('other = "' + definition + '"\n')
+                        file.write("\n")
 
 print()
 print("All available translations downloaded successfully!")
-print("Don't forget to adjust the file permissions.")
 print()
