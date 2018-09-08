@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-import sys, os, os.path, errno
+import sys, os, os.path
 import requests
 from tqdm import tqdm
-
-
 
 # Greeting
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -64,15 +62,15 @@ for language in tqdm(r.get('result').get('languages'), "Processing languages fro
         # Convert and write file
         with open(LANGUAGE_FILE_PATH + language.get('code') + '.toml', 'w', 1, 'utf-8') as file:
             for string in f.json():
-                if string.get('definition') is not None:
+                if string.get('definition'):
                     definition = string.get('definition')
 
                     if type(definition) is dict:
-                        if (definition.get('one') is not '') or (definition.get('other') is not ''):
+                        if definition.get('one') or definition.get('other'):
                             file.write("[" + string.get('term') + "]\n")
-                            if(definition.get('one') is not None):
+                            if(definition.get('one')):
                                 file.write('one = "' + definition.get("one") + '"\n')
-                            if(definition.get('other') is not None):
+                            if(definition.get('other')):
                                 file.write('other = "' + definition.get("other") + '"\n')
                             file.write("\n")
                     else:
